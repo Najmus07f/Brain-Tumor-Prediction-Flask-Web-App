@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Brain Tumor Prediction</title>
+  <style>
+
+    :root{
+      --primary:#7c3aed;
+      --primary-dark:#6b21a8;
+      --panel:#eef2ff;
+      --accent:#2563eb;
+      --again:#f59e0b;
+      --text:#0f172a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:0; background:#f4f7ff;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+    }
+    .header{
+      background: linear-gradient(0deg, var(--primary-dark), var(--primary));
+      color:#f7f5ff; text-align:center; padding:16px 24px;
+      font-size:40px; font-weight:900; letter-spacing:.06em;
+    }
+    .container{ max-width:1100px; margin:0 auto; padding:24px 16px; }
+
+    .panel{
+      background:var(--panel); border-radius:10px;
+      padding:28px 16px; text-align:center;
+      border:6px solid var(--primary); box-shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+
+    /* custom "Upload an image" button */
+    .file-wrap{ display:flex; justify-content:center; align-items:center; gap:18px; } /* +gap for preview */
+    input[type=file]{ display:none; }
+    .upload-btn{
+      display:inline-block; background:#ffffff; color:#0f172a;
+      border:1px solid #d1d5db; border-radius:10px; padding:10px 16px;
+      min-width:260px; cursor:pointer; font-weight:700;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+    }
+    .hint{ margin-top:8px; font-size:13px; color:#64748b; }
+
+    .predict-btn{
+      margin-top:18px; background:var(--accent); color:#fff; border:0;
+      border-radius:8px; padding:11px 18px; font-weight:700; cursor:pointer;
+      box-shadow:0 2px 0 rgba(0,0,0,.12);
+    }
+    .predict-btn:active{ transform:translateY(1px) }
+
+    /* result card */
+    .result{
+      max-width:1100px; margin:20px auto 0; padding:22px;
+      border-radius:10px; background:var(--primary); color:#fff;
+      border:3px solid var(--primary); box-shadow:0 10px 30px rgba(0,0,0,.08);
+      text-align:center;
+    }
+    .result h2{ margin:0 0 12px; font-size:34px; font-weight:900; }
+    .pill{ display:inline-block; background:#eafff6; color:#116b4f; font-weight:800;
+           padding:4px 10px; border-radius:999px; margin-left:8px; }
+    .again{
+      display:inline-block; margin-top:14px; background:var(--again); color:#0f172a;
+      padding:11px 22px; border-radius:999px; font-weight:800; text-decoration:none;
+    }
+    .again:active{ transform:translateY(1px) }
+
+    /* === ADDED: preview on the right === */
+    .preview-wrap{
+      width:260px; height:160px; background:#fff;
+      border:1px solid #d1d5db; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      overflow:hidden;
+    }
+    #preview{
+      max-width:100%; max-height:100%; object-fit:contain; display:none;
+    }
+    /* =================================== */
+  </style>
+</head>
+<body>
+  <div class="header">BRAIN TUMOR PREDICTION</div>
+
+  <div class="container">
+    {% if not prediction %}
+      <div class="panel">
+        <form method="POST" action="{{ url_for('predict') }}" enctype="multipart/form-data">
+          <div class="file-wrap">
+            <label class="upload-btn" for="image">Upload an image</label>
+            <input id="image" type="file" name="image" accept="image/*" required>
+
+            <!-- ADDED: right-side medium preview (inside the box) -->
+            <div class="preview-wrap">
+              <img id="preview" alt="Selected preview">
+            </div>
+            <!-- END ADDED -->
+          </div>
+          <div class="hint">PNG / JPG / JPEG</div>
+          <button type="submit" class="predict-btn">Predict</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="result">
+        <h2>Prediction Result</h2>
+        <div style="font-size:20px">
+          Predicted Class:
+          <span class="pill">{{ prediction }}</span>
+        </div>
+        <a class="again" href="{{ url_for('home') }}">Predict Another</a>
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    // Make the whole label open the file dialog and show selected filename on it
+    const input = document.getElementById('image');
+    const label = document.querySelector('label.upload-btn');
+
+    // ADDED: preview elements
+    const preview = document.getElementById('preview');
+
+    if (input && label) {
+      input.addEventListener('change', () => {
+        if (input.files && input.files[0]) {
+          const file = input.files[0];
+          label.textContent = 'Selected: ' + file.name;
+
+          // show preview on the right
+          const url = URL.createObjectURL(file);
+          preview.src = url;
+          preview.style.display = 'block';
+          preview.onload = () => URL.revokeObjectURL(url);
+        } else {
+          label.textContent = 'Upload an image';
+          preview.src = '';
+          preview.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>
