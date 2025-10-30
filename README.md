@@ -18,10 +18,8 @@ CPU-friendly: runs locally without a GPU.
 Config-driven: small JSON files control model names, image size, and thresholds.
 
 How to run
-
 Create and activate a Python virtual environment.
 Install dependencies from requirements.txt.
-
 Put model files in models/:
 three backbone weights (*.pth)
 stacking_meta_lr.joblib
@@ -31,7 +29,6 @@ Upload an MRI image and press Predict.
 Tip: If PyTorch wheels fail on Windows, install the CPU wheels (no GPU required).
 
 What “Irrelevant Image” really means
-
 We don’t train a 5th class. Instead, we reject when the input looks risky:
 Low confidence: top class probability is below a threshold.
 High uncertainty: probability distribution is too spread out (high entropy).
@@ -45,7 +42,6 @@ Safety: graceful handling of wrong uploads is built-in.
 Maintainability: small, readable files; no heavy framework.
 
 Notes & limits
-
 Works on standard 2D MRI slices; unusual formats may need preprocessing.
 Confidence is provided for transparency, not clinical decision-making.
 If many valid MRIs are rejected, loosen thresholds. If non-MRIs slip through, tighten them.
