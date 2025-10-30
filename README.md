@@ -7,9 +7,7 @@ Why it’s different: the app refuses to guess on bad inputs. If confidence is l
 Demo
 
 Home: upload an image and click Predict
-(screenshot: UI_Home.png)
 Result: predicted class + confidence
-(screenshot: UI_Result.png)
 
 Highlights
 
