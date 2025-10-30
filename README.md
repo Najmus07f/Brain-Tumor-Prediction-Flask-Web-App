@@ -1,57 +1,81 @@
-Brain Tumor Prediction — Flask Web App
+Brain Tumor Prediction (Flask)
 
-A simple, single-page web app that predicts brain tumor type from an MRI image.
-Results shown: Glioma, Meningioma, Pituitary, No Tumor, or Irrelevant Image (when the photo isn’t a brain MRI or the model is unsure).
+A clean, one-page web app that predicts the tumor type from a brain MRI.
+Possible results: Glioma, Meningioma, Pituitary, No Tumor, or Irrelevant Image (when the upload is not a brain MRI or the model is unsure).
 
-Why this matters: real users often upload the wrong image. Instead of giving a confident but wrong label, the app safely says Irrelevant Image. That’s responsible ML.
+Why it’s different: the app refuses to guess on bad inputs. If confidence is low or the image looks non-MRI, it returns Irrelevant Image instead of a wrong label.
 
-What’s inside (in plain English)
+Demo
 
-A clean Flask UI: Upload an image → Predict → See result.
+Home: upload an image and click Predict
+(screenshot: UI_Home.png)
 
-An ensemble of three CNN backbones with a lightweight meta-model for stable output.
+Result: predicted class + confidence
+(screenshot: UI_Result.png)
 
-A no-retraining rejection rule: if confidence is low, uncertainty is high, or the picture is too colorful for an MRI, we return Irrelevant Image.
+Highlights
 
-Thresholds are editable in a small config file so strictness can be tuned easily.
+Simple UI: drag-and-drop style flow—upload → predict → result.
 
-How to run (short)
+Stronger predictions: three CNN backbones combined with a small meta-model.
 
-Create a Python virtual environment and activate it.
+Safe output: a built-in rejection rule returns Irrelevant Image for non-MRI photos or uncertain cases (no retraining needed).
 
-Install requirements from requirements.txt.
+CPU-friendly: runs locally without a GPU.
 
-Put the model files (three .pth weights + one .joblib) and the three tiny JSON configs into the models/ folder.
+Config-driven: small JSON files control model names, image size, and thresholds.
 
-Run the app and open the local URL shown in the terminal.
+How to run
 
-Upload an image, press Predict, and check the result.
+Create and activate a Python virtual environment.
 
-(If PyTorch gives wheel issues on your machine, install CPU wheels. No GPU required.)
+Install dependencies from requirements.txt.
 
-How “Irrelevant Image” works (brief)
+Put model files in models/:
 
-We don’t train a 5th class. We decide to reject when:
+three backbone weights (*.pth)
 
-the top class probability is too low (low confidence),
+stacking_meta_lr.joblib
 
-the probability distribution is too spread out (high entropy),
+config JSONs: labels.json, preprocess.json, ensemble_config.json
 
-the image looks unusually colorful for an MRI (colorfulness check).
+Start the app (python app.py) and open the local URL shown in the terminal.
 
-All three cut-offs live in the config and can be adjusted without touching training code.
+Upload an MRI image and press Predict.
 
-What reviewers should look at
+Tip: If PyTorch wheels fail on Windows, install the CPU wheels (no GPU required).
 
-User experience: focused, minimal, and easy to demo.
+What “Irrelevant Image” really means
 
-Reliability: ensemble + meta-learner gives steadier predictions than a single model.
+We don’t train a 5th class. Instead, we reject when the input looks risky:
 
-Safety: built-in rejection avoids misleading outputs on non-MRI photos.
+Low confidence: top class probability is below a threshold.
 
-Maintainability: thresholds and model file names are driven by small JSONs, not hard-coded.
+High uncertainty: probability distribution is too spread out (high entropy).
 
-Tech snapshot
+Not MRI-like: colorfulness is unusually high for MRI images.
 
-Flask • PyTorch (timm backbones) • scikit-learn (meta-learner) • Pillow/Numpy
-Runs on CPU. Works locally. Screenshots are included for a quick glance at the UI.
+These cut-offs live in ensemble_config.json. You can make the app stricter (more rejections) or looser (fewer rejections) by editing those numbers.
+
+What reviewers can check quickly
+
+UX: minimal, fast, and easy to test.
+
+Engineering: ensemble + meta-learner for stability; thresholds in configs, not hard-coded.
+
+Safety: graceful handling of wrong uploads is built-in.
+
+Maintainability: small, readable files; no heavy framework.
+
+Notes & limits
+
+Works on standard 2D MRI slices; unusual formats may need preprocessing.
+
+Confidence is provided for transparency, not clinical decision-making.
+
+If many valid MRIs are rejected, loosen thresholds. If non-MRIs slip through, tighten them.
+
+Credits / Contact
+
+Built with Flask, PyTorch (timm), scikit-learn, Pillow, and Numpy.
+Happy to share the model bundle via a GitHub Release and walk through the design if needed.
