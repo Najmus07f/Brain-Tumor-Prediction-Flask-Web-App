@@ -6,7 +6,7 @@ Why it’s different: the app refuses to guess on bad inputs. If confidence is l
 
 Demo
 
-Home: upload an image and click Predict
+Home: upload an image and click Predict.
 Result: predicted class + confidence
 
 Highlights
