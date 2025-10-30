@@ -1,0 +1,25 @@
+{
+  "base_models": [
+    {
+      "name": "vgg16_bn",
+      "ckpt": "vgg16_bn_best.pth",
+      "img_size": 224
+    },
+    {
+      "name": "efficientnet_b3",
+      "ckpt": "efficientnet_b3_best.pth",
+      "img_size": 300
+    },
+    {
+      "name": "inception_v3",
+      "ckpt": "inception_v3_best.pth",
+      "img_size": 299
+    }
+  ],
+  "meta_path": "stacking_meta_lr.joblib",
+  "thresholds": {
+    "maxprob": 0.7,
+    "entropy": 1.05,
+    "color_saturation": 0.08
+  }
+}
